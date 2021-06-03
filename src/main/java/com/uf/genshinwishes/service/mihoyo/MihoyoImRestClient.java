@@ -5,6 +5,7 @@ import com.uf.genshinwishes.dto.mihoyo.MihoyoUserDTO;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
 import com.uf.genshinwishes.model.User;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,27 +16,26 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
+import static com.uf.genshinwishes.exception.ErrorType.NO_SUITABLE_ENDPOINT_FOR_GAME_BIZ;
+
 @Service
 public class MihoyoImRestClient {
     private final Logger logger = LoggerFactory.getLogger(MihoyoRestClient.class);
 
     @Autowired
+    @Setter
     private RestTemplate restTemplate;
 
-    private String mihoyoImEndpoint;
+    @Autowired
+    private MihoyoGameBizSettingsSelector selector;
 
-    MihoyoImRestClient(@Value("${app.mihoyo.im-endpoint}")
-                           String mihoyoImEndpoint) {
-        this.mihoyoImEndpoint = mihoyoImEndpoint;
-    }
 
-    public MihoyoUserDTO getUserInfo(Optional<User> user, String authkey) throws ApiError {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(mihoyoImEndpoint + "/common/im/userClient/initUserChat")
+    public MihoyoUserDTO getUserInfo(Optional<User> user, String authkey, String gameBiz) throws ApiError {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(selector.getImEndpoint(gameBiz).orElseThrow(() -> new ApiError(NO_SUITABLE_ENDPOINT_FOR_GAME_BIZ)) + "/common/im/userClient/initUserChat")
             .queryParam("authkey", authkey)
             .queryParam("authkey_ver", 1)
-            .queryParam("game_biz", "hk4e_global")
+            .queryParam("game_biz", gameBiz)
             .queryParam("sign_type", 2);
-
         MihoyoInfoRetDTO body = getBody(user, builder);
 
         if (body.getRetcode() < 0 || body.getData() == null) {

@@ -1,6 +1,6 @@
 package com.uf.genshinwishes.dto;
 
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

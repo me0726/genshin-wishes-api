@@ -1,19 +1,18 @@
-package com.uf.genshinwishes.model;
+package com.uf.genshinwishes.model.enums;
 
+import com.uf.genshinwishes.model.User;
 import lombok.Getter;
 
 import java.util.Arrays;
 
 @Getter
 public enum Region {
+    CHINA("1"),
     AMERICA("6"),
     EUROPE("7"),
-    ASIA("8"),
+    ASIA("8");
 
-    //
-    ;
-
-    private String prefix;
+    private final String prefix;
 
     Region(String prefix) {
         this.prefix = prefix;

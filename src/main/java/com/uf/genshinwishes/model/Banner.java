@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "events")
-@Where(clause="published_at is not null")
 @Getter
 @Setter
 @NoArgsConstructor

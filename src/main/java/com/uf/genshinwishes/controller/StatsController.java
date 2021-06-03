@@ -2,7 +2,7 @@ package com.uf.genshinwishes.controller;
 
 import com.uf.genshinwishes.dto.StatsDTO;
 import com.uf.genshinwishes.dto.WishFilterDTO;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;

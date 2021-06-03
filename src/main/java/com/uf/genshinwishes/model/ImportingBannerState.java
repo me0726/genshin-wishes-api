@@ -4,11 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
-@Entity(name = "importing_banner_states")
+@EntityListeners(AuditingEntityListener.class)
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,4 +41,10 @@ public class ImportingBannerState implements Serializable {
     @ManyToOne
     @JoinColumn(name = "importing_state_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     ImportingState importingState;
+
+    @CreatedDate
+    private LocalDateTime createTime;
+
+    @LastModifiedDate
+    private LocalDateTime updateTime;
 }

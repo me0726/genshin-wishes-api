@@ -1,10 +1,17 @@
 package com.uf.genshinwishes.config;
 
+/**
+ * @author me 2021-06-03 12:05
+ */
+
+import com.uf.genshinwishes.config.security.oauth2.GsOauth2User;
 import com.uf.genshinwishes.model.User;
-import com.uf.genshinwishes.security.UserPrincipal;
 import com.uf.genshinwishes.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -23,12 +30,20 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() == null || !(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserPrincipal))
+    public Object resolveArgument(@NonNull MethodParameter parameter,
+                                  @Nullable ModelAndViewContainer mavContainer,
+                                  @NonNull NativeWebRequest webRequest,
+                                  @Nullable WebDataBinderFactory binderFactory) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
             return null;
-
-        UserPrincipal user = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        return userService.findByEmail(user.getUsername());
+        }
+        if (authentication.getPrincipal() == null) {
+            return null;
+        }
+        if (!(authentication.getPrincipal() instanceof GsOauth2User user)) {
+            return null;
+        }
+        return userService.findByEmail(user.getName()).orElse(null);
     }
 }

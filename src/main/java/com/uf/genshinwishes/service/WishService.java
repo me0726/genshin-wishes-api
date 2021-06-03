@@ -13,6 +13,7 @@ import com.uf.genshinwishes.dto.mihoyo.MihoyoWishLogDTO;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
 import com.uf.genshinwishes.model.*;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.repository.ItemRepository;
 import com.uf.genshinwishes.repository.wish.WishRepository;
 import com.uf.genshinwishes.repository.wish.WishSpecification;
@@ -58,7 +59,7 @@ public class WishService {
     private List<Item> items;
 
     @Transactional
-    public void importWishes(User user, String authkey) {
+    public void importWishes(User user, String authkey, String gameBiz) {
         if (Strings.isNullOrEmpty(user.getMihoyoUid())) {
             throw new ApiError(ErrorType.NO_MIHOYO_LINKED);
         }
@@ -69,12 +70,12 @@ public class WishService {
             throw new ApiError(ErrorType.ALREADY_IMPORTING);
         }
 
-        MihoyoUserDTO mihoyoUser = mihoyoImRestClient.getUserInfo(Optional.of(user), authkey);
+        MihoyoUserDTO mihoyoUser = mihoyoImRestClient.getUserInfo(Optional.of(user), authkey, gameBiz);
 
-        if (!user.getMihoyoUid().equals(mihoyoUser.getUser_id()))
+        if (!user.getMihoyoUid().equals(mihoyoUser.getUserId()))
             throw new ApiError(ErrorType.MIHOYO_UID_DIFFERENT);
 
-        CompletableFuture.runAsync(() -> runImportFor(stateByBanner, user, authkey));
+        CompletableFuture.runAsync(() -> runImportFor(stateByBanner, user, authkey, gameBiz));
     }
 
 
@@ -133,14 +134,13 @@ public class WishService {
         return wishRepository.count();
     }
 
-    private void runImportFor(Map<Integer, ImportingBannerState> stateByGachaType, User user, String authkey) {
+    private void runImportFor(Map<Integer, ImportingBannerState> stateByGachaType, User user, String authkey, String gameBiz) {
         // Refresh item list
         items = itemRepository.findAll();
 
         Optional<Wish> ifLastWish = wishRepository.findFirstByUserOrderByTimeDescIdDesc(user);
         Optional<LocalDateTime> ifLastWishDate = ifLastWish.map(Wish::getTime);
         Map<BannerType, Long> oldCounts = countAllByUser(user);
-        Instant now = Instant.now();
 
         List<Wish> cumulatedWishes = Lists.newArrayList();
 
@@ -148,7 +148,7 @@ public class WishService {
             ImportingBannerState bannerState = stateByGachaType.get(bannerType.getType());
 
             try {
-                List<Wish> wishes = paginateWishesOlderThanDate(bannerState, authkey, bannerType, ifLastWishDate);
+                List<Wish> wishes = paginateWishesOlderThanDate(bannerState, gameBiz, authkey, bannerType, ifLastWishDate);
 
                 importingStateService.finish(bannerState);
 
@@ -175,11 +175,8 @@ public class WishService {
                             last4Star.set(index);
                             break;
                     }
-                    wish.setImportDate(now);
                     wish.setIndex(index);
-
                     oldCounts.put(bannerType, index);
-
                     return wish;
                 }).collect(Collectors.toList());
 
@@ -213,17 +210,17 @@ public class WishService {
             });
     }
 
-    private List<MihoyoWishLogDTO> getWishesForPage(String authkey, BannerType bannerType, String lastWishId, Integer page) {
-        return mihoyoRestClient.getWishes(authkey, bannerType, lastWishId, page);
+    private List<MihoyoWishLogDTO> getWishesForPage(String authkey, String gameBiz, BannerType bannerType, String lastWishId, Integer page) {
+        return mihoyoRestClient.getWishes(authkey, gameBiz, bannerType, lastWishId, page);
     }
 
-    private List<Wish> paginateWishesOlderThanDate(ImportingBannerState bannerState, String authkey, BannerType bannerType, Optional<LocalDateTime> ifLastWishDate) {
+    private List<Wish> paginateWishesOlderThanDate(ImportingBannerState bannerState, String authkey, String gameBiz, BannerType bannerType, Optional<LocalDateTime> ifLastWishDate) {
         List<Wish> wishes = Lists.newLinkedList();
         List<MihoyoWishLogDTO> pageWishes;
         String lastWishId = null;
         int currentPage = 1;
 
-        while (!(pageWishes = getWishesForPage(authkey, bannerType, lastWishId, currentPage++)).isEmpty()) {
+        while (!(pageWishes = getWishesForPage(authkey, gameBiz, bannerType, lastWishId, currentPage++)).isEmpty()) {
             List<Wish> internalWishes = pageWishes.stream()
                 .map(wish -> wishMapper.fromMihoyo(wish, items))
                 .collect(Collectors.toList());
@@ -251,7 +248,7 @@ public class WishService {
         }
 
         if (!wishes.isEmpty()) {
-            Wish firstWish = wishMapper.fromMihoyo(getWishesForPage(authkey, bannerType, null, 1).get(0), items);
+            Wish firstWish = wishMapper.fromMihoyo(getWishesForPage(authkey, gameBiz, bannerType, null, 1).get(0), items);
 
             if (!wishes.get(0).getTime().equals(firstWish.getTime())) {
                 throw new ApiError(ErrorType.NEW_WISHES_DURING_IMPORT);

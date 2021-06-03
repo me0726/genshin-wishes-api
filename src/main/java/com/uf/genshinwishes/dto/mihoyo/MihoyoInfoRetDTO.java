@@ -1,14 +1,12 @@
 package com.uf.genshinwishes.dto.mihoyo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MihoyoInfoRetDTO extends MihoyoRetDTO {
     private MihoyoUserDTO data;
 }

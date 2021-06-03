@@ -1,58 +1,52 @@
 package com.uf.genshinwishes.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Entity(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Entity
+@Data
+@Builder
+@Accessors(chain = true)
 @AllArgsConstructor
-public class User implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -51419785561130265L;
-
+@NoArgsConstructor
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, updatable = false)
     private String email;
 
-    @Column
-    private String region;
-
-    @Column
-    private String key;
-
-    @Column()
-    private String lang;
-
-    @Column()
-    private Boolean wholeClock;
-
-    @Column(nullable = false)
-    private Date creationDate;
-
-    @Column()
-    private Date lastLoggingDate;
-
-    @Column()
-    private String mihoyoUsername;
-
-    @Column()
     private String mihoyoUid;
 
-    @Column()
+    private String region;
+
+    private String lang;
+
+    private Boolean wholeClock;
+
+    private String nickname;
+
     private String profileId;
 
-    @Column()
     private Boolean sharing;
+
+    private LocalDateTime lastLoginTime;
+
+    @CreatedDate
+    private LocalDateTime createTime;
+
+    @LastModifiedDate
+    private LocalDateTime updateTime;
+
 }

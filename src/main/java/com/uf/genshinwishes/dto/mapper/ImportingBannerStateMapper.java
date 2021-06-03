@@ -1,7 +1,7 @@
 package com.uf.genshinwishes.dto.mapper;
 
 import com.uf.genshinwishes.dto.BannerImportStateDTO;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.ImportingBannerState;
 import org.springframework.stereotype.Component;
 

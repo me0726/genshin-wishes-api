@@ -2,7 +2,7 @@ package com.uf.genshinwishes.service;
 
 import com.uf.genshinwishes.dto.*;
 import com.uf.genshinwishes.dto.mapper.WishMapper;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.model.Wish;
 import com.uf.genshinwishes.repository.wish.WishRepository;
@@ -20,7 +20,6 @@ import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +71,7 @@ public class StatsService {
         CriteriaQuery<CountPerRankAndDay> query = criteriaBuilder.createQuery(CountPerRankAndDay.class);
         Root<Wish> root = query.from(Wish.class);
 
-        Expression<LocalDate> dateTrunc = criteriaBuilder.function("DATE_TRUNC", Date.class, criteriaBuilder.literal("WEEK"), root.get("time")).as(LocalDate.class);
+        Expression<LocalDate> dateTrunc = criteriaBuilder.function("DATE_TRUNC", LocalDate.class, criteriaBuilder.literal("WEEK"), root.get("time")).as(LocalDate.class);
 
         query.where(specification.toPredicate(root, query, criteriaBuilder));
 

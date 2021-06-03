@@ -6,6 +6,8 @@ import com.uf.genshinwishes.dto.WishFilterDTO;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
 import com.uf.genshinwishes.model.*;
+import com.uf.genshinwishes.model.enums.BannerType;
+import com.uf.genshinwishes.model.enums.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,9 +97,9 @@ public class WishSpecification implements Specification<Wish> {
                     LocalDateTime end = banner.getStartEndByRegion().get(region)[1];
 
                     return builder.and(builder.equal(root.get("user").get("region"), region.getPrefix()), builder.between(
-                        builder.function("DATE_TRUNC", Date.class, builder.literal("MINUTE"), root.get("time")).as(LocalDateTime.class),
-                         builder.literal(start),
-                         builder.literal(end)));
+                        builder.function("DATE_TRUNC", LocalDateTime.class, builder.literal("MINUTE"), root.get("time")).as(LocalDateTime.class),
+                        builder.literal(start),
+                        builder.literal(end)));
                 }).collect(Collectors.toList());
 
                 return builder.or(timePredicates.toArray(new Predicate[]{}));

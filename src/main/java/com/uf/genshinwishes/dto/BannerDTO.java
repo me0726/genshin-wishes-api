@@ -1,9 +1,9 @@
 package com.uf.genshinwishes.dto;
 
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.Image;
 import com.uf.genshinwishes.model.Item;
-import com.uf.genshinwishes.model.Region;
+import com.uf.genshinwishes.model.enums.Region;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

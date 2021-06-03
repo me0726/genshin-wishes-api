@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
     public UserDTO toDto(User user) {
-        if(user == null) return null;
+        if (user == null) return null;
 
         UserDTO userDTO = new UserDTO();
 
@@ -16,7 +16,7 @@ public class UserMapper {
         userDTO.setWholeClock(user.getWholeClock());
         userDTO.setMihoyoUid(user.getMihoyoUid());
         userDTO.setRegion(user.getRegion());
-        userDTO.setMihoyoUsername(user.getMihoyoUsername());
+        userDTO.setMihoyoUsername(user.getNickname());
         userDTO.setProfileId(user.getProfileId());
         userDTO.setSharing(user.getSharing());
 

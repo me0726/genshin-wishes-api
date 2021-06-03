@@ -4,8 +4,7 @@ import com.google.common.collect.Maps;
 import com.uf.genshinwishes.dto.*;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
-import com.uf.genshinwishes.model.BannerType;
-import com.uf.genshinwishes.model.Item;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.model.Wish;
 import com.uf.genshinwishes.repository.wish.WishRepository;
@@ -20,8 +19,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 // TODO refactor (not dry at all)
 

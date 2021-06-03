@@ -1,4 +1,4 @@
-package com.uf.genshinwishes.model;
+package com.uf.genshinwishes.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,7 +2,7 @@ package com.uf.genshinwishes.controller;
 
 import com.uf.genshinwishes.dto.BannerDTO;
 import com.uf.genshinwishes.dto.PublicStatsDTO;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.service.BannerService;
 import com.uf.genshinwishes.service.PublicStatsService;
 import com.uf.genshinwishes.service.UserService;
@@ -31,7 +31,7 @@ public class PublicController {
     @GetMapping("/languages")
     public Map<String, String> getLanguages(@RequestParam("locales") List<String> locales) {
         return locales.stream()
-            .map(locale -> Locale.forLanguageTag(locale))
+            .map(Locale::forLanguageTag)
             .collect(Collectors.toMap(Locale::toLanguageTag, locale -> locale.getDisplayName(locale)));
     }
 

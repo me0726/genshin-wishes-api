@@ -5,11 +5,13 @@ import com.uf.genshinwishes.dto.mihoyo.MihoyoWishLogDTO;
 import com.uf.genshinwishes.dto.mihoyo.MihoyoWishRetDTO;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,8 +35,18 @@ class MihoyoRestClientTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private MihoyoGameBizSettingsSelector selector;
+
     @InjectMocks
-    private MihoyoRestClient mihoyoRestClient = new MihoyoRestClient(MIHOYO_ENDPOINT);
+    private MihoyoRestClient mihoyoRestClient = new MihoyoRestClient();
+
+    @BeforeEach
+    public void before() {
+        Mockito.when(selector.getWishEndpoint(ArgumentMatchers.eq("hk4e_global")))
+            .thenReturn(Optional.of(MIHOYO_ENDPOINT));
+    }
+
 
     @Test
     void givenMihoyoReturnsCorrectData_thenReturnWishes() throws URISyntaxException {
@@ -54,7 +67,7 @@ class MihoyoRestClientTest {
                 Mockito.eq(MihoyoWishRetDTO.class)))
             .thenReturn(new ResponseEntity<>(retDTO, HttpStatus.OK));
 
-        List<MihoyoWishLogDTO> wishes = mihoyoRestClient.getWishes("authkey", BannerType.WEAPON_EVENT, "last-id", 0);
+        List<MihoyoWishLogDTO> wishes = mihoyoRestClient.getWishes("authkey", "hk4e_global", BannerType.WEAPON_EVENT, "last-id", 0);
 
         Mockito.verify(restTemplate, Mockito.times(1)).getForEntity(
             Mockito.eq(uri),
@@ -98,7 +111,7 @@ class MihoyoRestClientTest {
             .thenReturn(new ResponseEntity<>(retDTO, HttpStatus.OK));
 
         Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            mihoyoRestClient.getWishes("authkey", BannerType.WEAPON_EVENT, "last_id", 0);
+            mihoyoRestClient.getWishes("authkey", "hk4e_global", BannerType.WEAPON_EVENT, "last_id", 0);
         });
 
 

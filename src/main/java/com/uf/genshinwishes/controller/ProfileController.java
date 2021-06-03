@@ -5,7 +5,7 @@ import com.uf.genshinwishes.dto.StatsDTO;
 import com.uf.genshinwishes.dto.WishFilterDTO;
 import com.uf.genshinwishes.exception.ApiError;
 import com.uf.genshinwishes.exception.ErrorType;
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.service.BannerService;
 import com.uf.genshinwishes.service.StatsService;
@@ -32,14 +32,12 @@ public class ProfileController {
     @GetMapping("/")
     public String getUsername(@PathVariable("profileId") String profileId) {
         User user = assertUser(profileId);
-
-        return user.getMihoyoUsername();
+        return user.getNickname();
     }
 
     @GetMapping("/banners")
     public Iterable<BannerDTO> getBanners(@PathVariable("profileId") String profileId) {
         User user = assertUser(profileId);
-
         return bannerService.findAllForUser(user);
     }
 
@@ -51,9 +49,8 @@ public class ProfileController {
     }
 
     @GetMapping("/banners/weapon")
-    public Iterable<BannerDTO> getWeaponEvents(@PathVariable("profileId") String profileId) {
+    public Iterable<BannerDTO> getWeaponEvents(@PathVariable String profileId) {
         User user = assertUser(profileId);
-
         return bannerService.findAllByGachaTypeOrderByStartDateDesc(user, BannerType.WEAPON_EVENT.getType());
     }
 
@@ -70,17 +67,14 @@ public class ProfileController {
                 weaponEvents.orElse(Collections.emptyList()).stream()
             ).collect(Collectors.toList())
         ).build();
-
         return statsService.getStatsFor(user, bannerType.orElse(BannerType.ALL), filters);
     }
 
-    private User assertUser(@PathVariable("profileId") String profileId) {
-        User user = this.userService.findUserByProfileId(profileId);
-
-        if (user == null || user.getSharing() == null || !user.getSharing()) {
-            throw new ApiError(ErrorType.PROFILE_NOT_FOUND);
+    private User assertUser(@PathVariable String profileId) {
+        Optional<User> user = this.userService.findUserByProfileId(profileId);
+        if (user.map(User::getSharing).orElse(false)) {
+            return user.get();
         }
-
-        return user;
+        throw new ApiError(ErrorType.PROFILE_NOT_FOUND);
     }
 }

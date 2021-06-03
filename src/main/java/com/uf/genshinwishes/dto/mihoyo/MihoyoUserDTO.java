@@ -1,5 +1,6 @@
 package com.uf.genshinwishes.dto.mihoyo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -7,7 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class MihoyoUserDTO {
-    private String user_id;
+    @JsonProperty("user_id")
+    private String userId;
     private String nickname;
 }

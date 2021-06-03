@@ -1,6 +1,6 @@
 package com.uf.genshinwishes.service;
 
-import com.uf.genshinwishes.model.BannerType;
+import com.uf.genshinwishes.model.enums.BannerType;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.model.Wish;
 import org.apache.commons.csv.CSVFormat;

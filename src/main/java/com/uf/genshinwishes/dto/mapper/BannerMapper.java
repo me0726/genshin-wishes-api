@@ -2,8 +2,8 @@ package com.uf.genshinwishes.dto.mapper;
 
 import com.uf.genshinwishes.dto.BannerDTO;
 import com.uf.genshinwishes.model.Banner;
-import com.uf.genshinwishes.model.BannerType;
-import com.uf.genshinwishes.model.Region;
+import com.uf.genshinwishes.model.enums.BannerType;
+import com.uf.genshinwishes.model.enums.Region;
 import com.uf.genshinwishes.model.User;
 import com.uf.genshinwishes.service.UserService;
 import org.springframework.stereotype.Component;

@@ -110,9 +110,7 @@ class MihoyoRestClientTest {
                 Mockito.eq(MihoyoWishRetDTO.class)))
             .thenReturn(new ResponseEntity<>(retDTO, HttpStatus.OK));
 
-        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            mihoyoRestClient.getWishes("authkey", "hk4e_global", BannerType.WEAPON_EVENT, "last_id", 0);
-        });
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> mihoyoRestClient.getWishes("authkey", "hk4e_global", BannerType.WEAPON_EVENT, "last_id", 0));
 
 
         Mockito.verify(restTemplate, Mockito.times(1)).getForEntity(

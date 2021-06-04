@@ -10,7 +10,6 @@ app:
         client-read-timeout: 120000
         client-connect-timeout: 120000
         client-url: http://localhost/${server.servlet.context-path}
-
 management:
     endpoints:
         web:

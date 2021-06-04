@@ -57,9 +57,7 @@ class MihoyoImRestClientTest {
                 MihoyoInfoRetDTO.class))
             .thenReturn(new ResponseEntity<>(retDTO, HttpStatus.OK));
 
-        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            mihoyoImRestClient.getUserInfo(Optional.empty(), "authkey", "hk4e_global");
-        });
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> mihoyoImRestClient.getUserInfo(Optional.empty(), "authkey", "hk4e_global"));
 
 
         Mockito.verify(restTemplate, Mockito.times(1)).postForEntity(
@@ -84,9 +82,7 @@ class MihoyoImRestClientTest {
                 MihoyoInfoRetDTO.class))
             .thenReturn(new ResponseEntity<>(retDTO, HttpStatus.OK));
 
-        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            mihoyoImRestClient.getUserInfo(Optional.empty(), "authkey", "hk4e_global");
-        });
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> mihoyoImRestClient.getUserInfo(Optional.empty(), "authkey", "hk4e_global"));
 
         Mockito.verify(restTemplate, Mockito.times(1)).postForEntity(
             Mockito.eq(uri),

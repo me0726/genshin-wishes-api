@@ -26,11 +26,11 @@ public class ImportingState implements Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     private User user;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "importing_state_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(nullable = false)
     List<ImportingBannerState> bannerStates;
 
     @CreatedDate

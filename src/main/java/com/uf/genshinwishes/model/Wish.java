@@ -9,7 +9,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -37,7 +36,7 @@ public class Wish {
     private Integer gachaType;
 
     @ManyToOne
-    @JoinColumn(name = "item_id", referencedColumnName = "itemId")
+    @JoinColumn(referencedColumnName = "item_id")
     private Item item;
 
     @Column(nullable = false)

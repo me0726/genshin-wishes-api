@@ -39,8 +39,8 @@ public class ImportingBannerState implements Serializable {
     private String error;
 
     @ManyToOne
-    @JoinColumn(name = "importing_state_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    ImportingState importingState;
+    @JoinColumn(nullable = false, insertable = false, updatable = false)
+    private ImportingState importingState;
 
     @CreatedDate
     private LocalDateTime createTime;

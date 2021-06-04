@@ -7,9 +7,6 @@ import java.util.List;
 
 public interface BannerRepository extends JpaRepository<Banner, Long> {
 
-    @Override
-    List<Banner> findAll();
-
     List<Banner> findAllByGachaTypeOrderByStartDesc(Integer gachaType);
 
     Banner findFirstByGachaTypeOrderByEndDesc(Integer gachaType);
